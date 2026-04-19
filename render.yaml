@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: seobrain-api
+    runtime: dotnet
+    buildCommand: dotnet publish -c Release -o out
+    startCommand: dotnet out/SEOBrain.API.dll
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: seobrain-db
+          property: connectionString
+      - key: Jwt__Key
+        generateValue: true
+      - key: Jwt__Issuer
+        value: SEOBrain
+      - key: Jwt__Audience
+        value: SEOBrain-Client
+      - key: Email__SmtpHost
+        value: smtp.gmail.com
+      - key: Email__SmtpPort
+        value: "587"
+      - key: Email__SmtpUser
+        sync: false
+      - key: Email__SmtpPassword
+        sync: false
+      - key: AiServiceUrl
+        value: https://your-ai-service-url.onrender.com
+    healthCheckPath: /health
+    plan: free
+
+databases:
+  - name: seobrain-db
+    databaseName: seobrain
+    user: seobrain
+    plan: free
+    postgresMajorVersion: "15"

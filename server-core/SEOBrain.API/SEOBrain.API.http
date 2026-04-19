@@ -1,0 +1,6 @@
+@SEOBrain.API_HostAddress = http://localhost:5120
+
+GET {{SEOBrain.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
