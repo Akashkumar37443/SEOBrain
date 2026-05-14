@@ -90,8 +90,7 @@ AI-powered SEO content analysis platform with subscription management, real-time
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd windsurf-project
-   ```
+   
 
 2. **Configure environment variables**
    ```bash
