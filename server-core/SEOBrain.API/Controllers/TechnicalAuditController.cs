@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SEOBrain.API.DTOs;
+using SEOBrain.API.Services;
 
 namespace SEOBrain.API.Controllers
 {
@@ -8,27 +10,61 @@ namespace SEOBrain.API.Controllers
     [Authorize]
     public class TechnicalAuditController : ControllerBase
     {
+        private readonly IAIService _aiService;
+        private readonly ILogger<TechnicalAuditController> _logger;
+
+        public TechnicalAuditController(IAIService aiService, ILogger<TechnicalAuditController> logger)
+        {
+            _aiService = aiService;
+            _logger = logger;
+        }
+
         [HttpPost("content")]
         public async Task<IActionResult> AuditContent([FromBody] ContentAuditRequest request)
         {
-            var audit = new TechnicalAuditResult
+            try
             {
-                MetaTags = AnalyzeMetaTags(request),
-                Headings = AnalyzeHeadings(request),
-                ContentStructure = AnalyzeContentStructure(request),
-                Links = AnalyzeLinks(request),
-                Images = AnalyzeImages(request),
-                Readability = AnalyzeReadability(request),
-                KeywordOptimization = AnalyzeKeywordOptimization(request),
-                OverallScore = 0
-            };
+                var aiRequest = new AiAuditRequestDto
+                {
+                    Title = request.Title,
+                    MetaDescription = request.MetaDescription,
+                    H1 = request.H1,
+                    H2Count = request.H2s?.Count ?? 0,
+                    H3Count = request.H3s?.Count ?? 0,
+                    Content = request.Content,
+                    PrimaryKeyword = request.PrimaryKeyword
+                };
 
-            // Calculate overall score
-            audit.OverallScore = CalculateOverallScore(audit);
-            audit.Summary = GenerateSummary(audit);
-            audit.PriorityFixes = GetPriorityFixes(audit);
+                var aiResult = await _aiService.AuditTechnicalAsync(aiRequest);
 
-            return Ok(audit);
+                var audit = new TechnicalAuditResult
+                {
+                    MetaTags = AnalyzeMetaTags(request),
+                    Headings = AnalyzeHeadings(request),
+                    ContentStructure = AnalyzeContentStructure(request),
+                    Links = AnalyzeLinks(request),
+                    Images = AnalyzeImages(request),
+                    Readability = AnalyzeReadability(request),
+                    KeywordOptimization = AnalyzeKeywordOptimization(request),
+                    OverallScore = aiResult.OverallScore > 0 ? aiResult.OverallScore : 0
+                };
+
+                if (audit.OverallScore == 0)
+                {
+                    audit.OverallScore = CalculateOverallScore(audit);
+                }
+                
+                audit.Summary = !string.IsNullOrEmpty(aiResult.Summary) ? aiResult.Summary : GenerateSummary(audit);
+                audit.PriorityFixes = aiResult.PriorityFixes?.Count > 0 ? aiResult.PriorityFixes : GetPriorityFixes(audit);
+                audit.SchemaOpportunities = aiResult.SchemaOpportunities ?? new List<string> { "Article", "WebPage" };
+
+                return Ok(audit);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error executing technical audit");
+                return StatusCode(500, new { message = "Failed to run technical audit" });
+            }
         }
 
         private MetaTagsAnalysis AnalyzeMetaTags(ContentAuditRequest request)
@@ -36,7 +72,6 @@ namespace SEOBrain.API.Controllers
             var analysis = new MetaTagsAnalysis { Score = 100 };
             var issues = new List<string>();
 
-            // Title tag analysis
             if (string.IsNullOrEmpty(request.Title))
             {
                 issues.Add("Missing title tag - critical for SEO");
@@ -52,7 +87,6 @@ namespace SEOBrain.API.Controllers
                     issues.Add("Primary keyword missing from title tag");
             }
 
-            // Meta description
             if (string.IsNullOrEmpty(request.MetaDescription))
             {
                 issues.Add("Missing meta description - reduces CTR potential");
@@ -66,7 +100,6 @@ namespace SEOBrain.API.Controllers
                     issues.Add("Meta description too long (> 160 chars) - will be truncated");
             }
 
-            // Open Graph tags
             if (string.IsNullOrEmpty(request.OgTitle))
                 issues.Add("Missing Open Graph title - affects social sharing");
             if (string.IsNullOrEmpty(request.OgDescription))
@@ -74,7 +107,6 @@ namespace SEOBrain.API.Controllers
             if (string.IsNullOrEmpty(request.OgImage))
                 issues.Add("Missing Open Graph image - reduces social engagement");
 
-            // Canonical tag
             if (string.IsNullOrEmpty(request.CanonicalUrl))
             {
                 issues.Add("Missing canonical tag - risk of duplicate content issues");
@@ -132,7 +164,6 @@ namespace SEOBrain.API.Controllers
 
             analysis.WordCount = wordCount;
 
-            // Word count recommendations
             if (wordCount < 300)
             {
                 issues.Add($"Content too short ({wordCount} words) - aim for 500+ words minimum");
@@ -148,16 +179,13 @@ namespace SEOBrain.API.Controllers
                 analysis.Score += 10;
             }
 
-            // Paragraph structure
             var paragraphs = request.Content?.Split("\n\n").Length ?? 0;
             if (paragraphs < 3)
                 issues.Add("Content lacks paragraph breaks - hard to read");
 
-            // Schema markup check
             if (!request.HasSchemaMarkup)
                 issues.Add("No Schema.org markup - missing rich snippet opportunities");
 
-            // Internal links
             if (request.InternalLinks < 2)
                 issues.Add("Few internal links - add more to improve site structure");
 
@@ -231,11 +259,10 @@ namespace SEOBrain.API.Controllers
             {
                 var words = request.Content.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
                 var sentences = request.Content.Split(new[] { '.', '!', '?' }, StringSplitOptions.RemoveEmptyEntries).Length;
-                var syllables = request.Content.Split(new[] { ' ', '\n' }).Select(w => CountSyllables(w)).Sum();
 
-                // Flesch Reading Ease
                 if (sentences > 0 && words > 0)
                 {
+                    var syllables = words * 1.5;
                     analysis.FleschScore = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
                     analysis.FleschScore = Math.Max(0, Math.Min(100, analysis.FleschScore));
 
@@ -278,7 +305,6 @@ namespace SEOBrain.API.Controllers
                 else if (density > 3)
                     issues.Add($"Keyword density too high ({density:F1}%) - risk of keyword stuffing");
 
-                // Check keyword placement
                 if (!content.StartsWith(keyword) && !(request.H1?.ToLower().Contains(keyword) ?? false))
                     issues.Add("Keyword not in first 100 words or H1");
             }
@@ -346,32 +372,6 @@ namespace SEOBrain.API.Controllers
 
             return allIssues.Take(5).ToList();
         }
-
-        private int CountSyllables(string word)
-        {
-            word = word.ToLower();
-            string vowels = "aeiouy";
-            int count = 0;
-            bool lastWasVowel = false;
-
-            foreach (char c in word)
-            {
-                if (vowels.Contains(c))
-                {
-                    if (!lastWasVowel) count++;
-                    lastWasVowel = true;
-                }
-                else
-                {
-                    lastWasVowel = false;
-                }
-            }
-
-            if (word.EndsWith('e')) count--;
-            if (count == 0) count = 1;
-
-            return count;
-        }
     }
 
     public class ContentAuditRequest
@@ -402,6 +402,7 @@ namespace SEOBrain.API.Controllers
         public int OverallScore { get; set; }
         public string Summary { get; set; } = "";
         public List<string> PriorityFixes { get; set; } = new();
+        public List<string> SchemaOpportunities { get; set; } = new();
         public MetaTagsAnalysis MetaTags { get; set; } = new();
         public HeadingsAnalysis Headings { get; set; } = new();
         public ContentStructureAnalysis ContentStructure { get; set; } = new();

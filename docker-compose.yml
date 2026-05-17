@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: seobrain-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+    ports:
+      - "1433:1433"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong!Passw0rd", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  server-ai:
+    build:
+      context: ./server-ai
+      dockerfile: Dockerfile
+    container_name: seobrain-server-ai
+    ports:
+      - "8000:8000"
+
+  server-core:
+    build:
+      context: ./server-core/SEOBrain.API
+      dockerfile: Dockerfile
+    container_name: seobrain-server-core
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=SEOBrainDB;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;"
+      AiServiceUrl: "http://server-ai:8000"
+    depends_on:
+      - sqlserver
+      - server-ai
+    ports:
+      - "5000:8080"
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: seobrain-client
+    environment:
+      VITE_PROXY_TARGET: "http://server-core:8080"
+      VITE_API_BASE_URL: ""
+    depends_on:
+      - server-core
+    ports:
+      - "5173:5173"

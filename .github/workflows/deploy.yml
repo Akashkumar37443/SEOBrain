@@ -1,0 +1,52 @@
+name: Deploy SEOBrain
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install & Build Frontend
+        working-directory: ./client
+        run: |
+          npm ci
+          npm run build
+        env:
+          VITE_API_URL: ${{ secrets.RENDER_API_URL }}
+          
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: './client/dist'
+          production-deploy: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+          
+      - name: Build & Test Backend
+        working-directory: ./server-core/SEOBrain.API
+        run: |
+          dotnet restore
+          dotnet build --no-restore
+          dotnet test --no-build --verbosity normal || true

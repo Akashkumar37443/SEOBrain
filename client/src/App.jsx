@@ -4,6 +4,11 @@ import { useAuth } from './contexts/AuthContext'
 import AuthPages from './components/AuthPages'
 import { ContentEditor, AnalysisHistory, AnalyticsDashboard, SettingsPage } from './components/ContentEditor'
 import { AdminPanel, AdminGuard } from './components/AdminPanel'
+import { CompetitorIntelligence } from './components/CompetitorIntelligence'
+import { TechnicalAudit } from './components/TechnicalAudit'
+import { KeywordStudio } from './components/KeywordStudio'
+import { MetaSchemaGenerator } from './components/MetaSchemaGenerator'
+import { ProjectHub } from './components/ProjectHub'
 import { 
   Brain, 
   FileText, 
@@ -21,173 +26,32 @@ import {
   AlertCircle,
   LogOut,
   User,
-  Shield
+  Shield,
+  Swords,
+  ShieldCheck,
+  Compass,
+  FolderKanban
 } from 'lucide-react'
 
-// Animated Score Ring Component
-function ScoreRing({ score, size = 120, strokeWidth = 8 }) {
-  const radius = (size - strokeWidth) / 2
-  const circumference = radius * 2 * Math.PI
-  const offset = circumference - (score / 100) * circumference
-  
-  const getColor = (s) => {
-    if (s >= 80) return '#22c55e'
-    if (s >= 60) return '#f59e0b'
-    if (s >= 40) return '#f97316'
-    return '#ef4444'
-  }
-  
-  const color = getColor(score)
-  
-  return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="transform -rotate-90">
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="#e2e8f0"
-          strokeWidth={strokeWidth}
-          fill="none"
-        />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke={color}
-          strokeWidth={strokeWidth}
-          fill="none"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          className="transition-all duration-1000 ease-out"
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-3xl font-bold text-slate-800">{score}</span>
-        <span className="text-xs text-slate-500">/100</span>
-      </div>
-    </div>
-  )
-}
-
-// Modern Result Card Component
-function ResultCard({ result }) {
-  const [copied, setCopied] = useState(false)
-  
-  if (!result) return null
-  
-  const copyToClipboard = () => {
-    const text = `SEO Score: ${result.score}/100\n\nSummary: ${result.summary}\n\nSuggestions:\n${result.suggestions?.join('\n') || 'None'}`
-    navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-  
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/50 shadow-2xl shadow-slate-200/50 overflow-hidden">
-        <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
-                <BarChart3 className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-white">Analysis Results</h2>
-                <p className="text-white/70 text-sm">AI-powered SEO insights</p>
-              </div>
-            </div>
-            <button
-              onClick={copyToClipboard}
-              className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl backdrop-blur-sm transition-all duration-200 text-white text-sm font-medium"
-            >
-              {copied ? (
-                <>
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4" />
-                  <span>Copy</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-        
-        <div className="p-8">
-          <div className="flex items-center gap-8 mb-8">
-            <ScoreRing score={result.score} />
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-5 h-5 text-violet-600" />
-                <span className="text-lg font-semibold text-slate-800">Performance Score</span>
-              </div>
-              <p className="text-slate-600 leading-relaxed">
-                {result.score >= 80 
-                  ? "Excellent! Your content is well-optimized for search engines."
-                  : result.score >= 60
-                  ? "Good progress. There are a few areas to improve."
-                  : "Needs work. Focus on the suggestions below to improve your SEO."}
-              </p>
-              <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-violet-50 rounded-full">
-                <span className="w-2 h-2 bg-violet-500 rounded-full animate-pulse"></span>
-                <span className="text-sm text-violet-700 font-medium">Analysis ID: {result.id?.slice(0, 8)}...</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mb-8 p-6 bg-gradient-to-br from-slate-50 to-white rounded-2xl border border-slate-100">
-            <div className="flex items-center gap-2 mb-3">
-              <Zap className="w-5 h-5 text-amber-500" />
-              <span className="font-semibold text-slate-800">Executive Summary</span>
-            </div>
-            <p className="text-slate-600 leading-relaxed text-lg">{result.summary}</p>
-          </div>
-          
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <Lightbulb className="w-5 h-5 text-violet-600" />
-              <span className="font-semibold text-slate-800">AI Recommendations</span>
-              <span className="ml-auto text-sm text-slate-500">{result.suggestions?.length || 0} items</span>
-            </div>
-            <div className="space-y-3">
-              {result.suggestions?.map((suggestion, idx) => (
-                <div 
-                  key={idx}
-                  className="group flex items-start gap-4 p-4 bg-white rounded-xl border border-slate-100 hover:border-violet-200 hover:shadow-lg hover:shadow-violet-100/50 transition-all duration-300"
-                >
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-violet-200">
-                    {idx + 1}
-                  </div>
-                  <p className="text-slate-700 leading-relaxed pt-1">{suggestion}</p>
-                  <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-violet-400 transition-colors mt-1" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 // Navigation Item Component
-function NavItem({ icon: Icon, label, active = false, onClick }) {
+function NavItem({ icon: Icon, label, badge, active = false, onClick }) {
   return (
     <button
       onClick={onClick}
       className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
         active 
           ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-200' 
-          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+          : 'text-slate-200 hover:bg-white/10 hover:text-white'
       }`}
     >
-      <Icon className={`w-5 h-5 ${active ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'}`} />
-      <span className="font-medium">{label}</span>
-      {active && <ChevronRight className="w-4 h-4 ml-auto" />}
+      <Icon className={`w-5 h-5 ${active ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`} />
+      <span className="font-medium text-sm text-left flex-1">{label}</span>
+      {badge && (
+        <span className="px-2 py-0.5 text-[10px] uppercase font-bold bg-amber-500/30 text-amber-300 border border-amber-400/30 rounded-full">
+          {badge}
+        </span>
+      )}
+      {active && <ChevronRight className="w-4 h-4 ml-auto flex-shrink-0" />}
     </button>
   )
 }
@@ -210,15 +74,15 @@ function App() {
   // Show auth pages if not logged in
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-white" />
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+        <Loader2 className="w-12 h-12 animate-spin text-purple-400" />
       </div>
     )
   }
   
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen relative overflow-hidden">
+      <div className="min-h-screen relative overflow-hidden bg-slate-950">
         <div className="orb orb-1"></div>
         <div className="orb orb-2"></div>
         <div className="orb orb-3"></div>
@@ -236,8 +100,8 @@ function App() {
       return
     }
     
-    if (text.trim().length < 50) {
-      setError('Content must be at least 50 characters for meaningful analysis.')
+    if (text.trim().length < 30) {
+      setError('Content must be at least 30 characters for meaningful analysis.')
       return
     }
     
@@ -258,9 +122,16 @@ function App() {
       handleAnalyze()
     }
   }
+
+  const handleSelectProjectForEdit = (proj) => {
+    if (proj.originalContent) {
+      setText(proj.originalContent)
+    }
+    setActiveTab('editor')
+  }
   
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-slate-950">
       {/* Animated background orbs */}
       <div className="orb orb-1"></div>
       <div className="orb orb-2"></div>
@@ -268,28 +139,65 @@ function App() {
       
       <div className="flex h-screen relative z-10">
         {/* Sidebar */}
-        <aside className="w-72 glass border-r border-white/30 flex flex-col">
-          <div className="p-6 border-b border-white/20">
+        <aside className="w-72 bg-slate-900/60 backdrop-blur-2xl border-r border-white/10 flex flex-col shadow-2xl">
+          <div className="p-6 border-b border-white/10">
             <div className="flex items-center gap-3">
-              <div className="w-14 h-14 bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg shadow-fuchsia-500/50 floating">
+              <div className="w-14 h-14 bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg shadow-fuchsia-500/50 floating flex-shrink-0">
                 <Brain className="w-8 h-8 text-white" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold rainbow-text">
                   SEO-Brain
                 </h1>
-                <p className="text-xs text-white/70 font-medium">AI-Powered SEO</p>
+                <p className="text-xs text-amber-300 font-bold uppercase tracking-wider">Elite Neuro-AI Edition</p>
               </div>
             </div>
           </div>
           
-          <nav className="flex-1 p-4 space-y-2">
+          <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
+            <div className="px-3 py-2 text-[11px] uppercase tracking-wider font-extrabold text-white/40">Core AI Tools</div>
             <NavItem 
               icon={FileText} 
               label="Content Editor" 
               active={activeTab === 'editor'}
               onClick={() => setActiveTab('editor')}
             />
+            <NavItem 
+              icon={FolderKanban} 
+              label="Project Hub" 
+              badge="New"
+              active={activeTab === 'projects'}
+              onClick={() => setActiveTab('projects')}
+            />
+
+            <div className="pt-4 px-3 py-2 text-[11px] uppercase tracking-wider font-extrabold text-white/40">Market Studio</div>
+            <NavItem 
+              icon={Swords} 
+              label="Competitor Intelligence" 
+              badge="AI Engine"
+              active={activeTab === 'competitor'}
+              onClick={() => setActiveTab('competitor')}
+            />
+            <NavItem 
+              icon={ShieldCheck} 
+              label="Technical SEO Audit" 
+              active={activeTab === 'audit'}
+              onClick={() => setActiveTab('audit')}
+            />
+            <NavItem 
+              icon={Compass} 
+              label="Keyword & Topic Studio" 
+              active={activeTab === 'keyword'}
+              onClick={() => setActiveTab('keyword')}
+            />
+            <NavItem 
+              icon={Sparkles} 
+              label="Meta & Schema Generator" 
+              active={activeTab === 'schema'}
+              onClick={() => setActiveTab('schema')}
+            />
+
+            <div className="pt-4 px-3 py-2 text-[11px] uppercase tracking-wider font-extrabold text-white/40">Insights & Settings</div>
             <NavItem 
               icon={History} 
               label="Analysis History" 
@@ -318,49 +226,54 @@ function App() {
             )}
           </nav>
           
-          <div className="p-4">
+          <div className="p-4 border-t border-white/10">
             {/* User Info */}
-            <div className="glass-dark rounded-2xl p-4 text-white mb-4">
+            <div className="bg-black/30 rounded-2xl p-4 text-white mb-4 border border-white/10 shadow-inner">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-violet-600 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-violet-600 rounded-full flex items-center justify-center font-bold text-white shadow">
+                  {user?.firstName?.[0] || <User className="w-5 h-5 text-white" />}
                 </div>
-                <div>
-                  <p className="font-semibold text-sm">{user?.firstName} {user?.lastName}</p>
-                  <p className="text-xs text-white/60">{user?.email}</p>
+                <div className="overflow-hidden flex-1">
+                  <p className="font-semibold text-sm truncate">{user?.firstName} {user?.lastName}</p>
+                  <p className="text-xs text-white/60 truncate">{user?.email}</p>
                 </div>
               </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-white/60">Tier: <span className="text-pink-400 font-semibold capitalize">{user?.subscriptionTier}</span></span>
-                <span className="text-white/60">{user?.remainingAnalyses}/{user?.monthlyAnalysisQuota} left</span>
+              <div className="flex items-center justify-between text-xs pt-2 border-t border-white/10">
+                <span className="text-white/60">Tier: <span className="text-pink-400 font-bold capitalize">{user?.subscriptionTier || 'Pro'}</span></span>
+                <span className="text-white/60">{user?.remainingAnalyses ?? 100}/{user?.monthlyAnalysisQuota ?? 100} left</span>
               </div>
             </div>
             
             <button
               onClick={logout}
-              className="w-full mt-4 flex items-center gap-2 px-4 py-3 text-red-300 hover:bg-red-500/20 rounded-xl transition-all duration-200"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 text-red-300 hover:bg-red-500/20 rounded-xl transition-all duration-200 border border-transparent hover:border-red-500/30"
             >
               <LogOut className="w-5 h-5" />
-              <span className="font-medium">Logout</span>
+              <span className="font-bold text-sm">Sign Out</span>
             </button>
           </div>
         </aside>
         
         {/* Main Content */}
         <main className="flex-1 overflow-auto">
-          <div className="max-w-5xl mx-auto p-8">
+          <div className="max-w-6xl mx-auto p-8 lg:p-12">
             {activeTab === 'editor' && (
               <ContentEditor 
                 text={text}
                 setText={setText}
                 charCount={charCount}
-                loading={loading}
+                loading={analysisLoading}
                 error={error}
                 result={result}
                 handleAnalyze={handleAnalyze}
                 handleKeyDown={handleKeyDown}
               />
             )}
+            {activeTab === 'projects' && <ProjectHub onSelectProject={handleSelectProjectForEdit} />}
+            {activeTab === 'competitor' && <CompetitorIntelligence />}
+            {activeTab === 'audit' && <TechnicalAudit />}
+            {activeTab === 'keyword' && <KeywordStudio />}
+            {activeTab === 'schema' && <MetaSchemaGenerator />}
             {activeTab === 'history' && <AnalysisHistory />}
             {activeTab === 'analytics' && <AnalyticsDashboard />}
             {activeTab === 'settings' && <SettingsPage />}

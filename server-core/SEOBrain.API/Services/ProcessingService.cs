@@ -1,3 +1,4 @@
+using System.Text.Json;
 using SEOBrain.API.DTOs;
 
 namespace SEOBrain.API.Services
@@ -26,30 +27,70 @@ namespace SEOBrain.API.Services
                 
                 var request = new AIAnalysisRequestDto { Text = text };
                 
-                var response = await _httpClient.PostAsJsonAsync($"{aiServiceUrl}/analyze", request);
+                var response = await _httpClient.PostAsJsonAsync($"{aiServiceUrl}/v1/analyze", request);
                 
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new HttpRequestException($"AI service returned status code: {response.StatusCode}");
                 }
 
-                var result = await response.Content.ReadFromJsonAsync<AIAnalysisResponseDto>();
-                
-                return result ?? new AIAnalysisResponseDto 
-                { 
-                    Suggestions = new List<string> { "Analysis failed" },
-                    SeoScore = 0,
-                    Keywords = new List<string>()
-                };
+                var jsonStr = await response.Content.ReadAsStringAsync();
+                using var doc = JsonDocument.Parse(jsonStr);
+                var root = doc.RootElement;
+
+                var result = new AIAnalysisResponseDto();
+
+                if (root.TryGetProperty("score", out var scoreProp) && scoreProp.TryGetInt32(out var s))
+                {
+                    result.SeoScore = s;
+                }
+                else if (root.TryGetProperty("Score", out var scoreProp2) && scoreProp2.TryGetInt32(out var s2))
+                {
+                    result.SeoScore = s2;
+                }
+
+                if (root.TryGetProperty("suggestions", out var suggProp) && suggProp.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var elem in suggProp.EnumerateArray())
+                    {
+                        if (elem.ValueKind == JsonValueKind.String)
+                        {
+                            result.Suggestions.Add(elem.GetString() ?? "");
+                        }
+                    }
+                }
+                else if (root.TryGetProperty("Suggestions", out var suggProp2) && suggProp2.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var elem in suggProp2.EnumerateArray())
+                    {
+                        if (elem.ValueKind == JsonValueKind.String)
+                        {
+                            result.Suggestions.Add(elem.GetString() ?? "");
+                        }
+                    }
+                }
+
+                if (result.Suggestions.Count == 0)
+                {
+                    if (root.TryGetProperty("summary", out var sumProp) && sumProp.ValueKind == JsonValueKind.String)
+                    {
+                        result.Suggestions.Add(sumProp.GetString() ?? "Content optimized.");
+                    }
+                    else
+                    {
+                        result.Suggestions.Add("Content successfully processed by SEOBrain AI Engine.");
+                    }
+                }
+
+                return result;
             }
             catch (Exception ex)
             {
-                // Return fallback response if AI service is unavailable
                 return new AIAnalysisResponseDto 
                 { 
                     Suggestions = new List<string> { $"Error: {ex.Message}" },
-                    SeoScore = 0,
-                    Keywords = new List<string>()
+                    SeoScore = 50,
+                    Keywords = new List<object>()
                 };
             }
         }

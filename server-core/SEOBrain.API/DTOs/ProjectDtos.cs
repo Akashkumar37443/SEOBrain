@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace SEOBrain.API.DTOs
 {
     public class ProjectDto
@@ -34,8 +36,13 @@ namespace SEOBrain.API.DTOs
 
     public class AIAnalysisResponseDto
     {
+        [JsonPropertyName("suggestions")]
         public List<string> Suggestions { get; set; } = new();
+
+        [JsonPropertyName("score")]
         public int SeoScore { get; set; }
-        public List<string> Keywords { get; set; } = new();
+
+        [JsonPropertyName("keywords")]
+        public List<object> Keywords { get; set; } = new();
     }
 }

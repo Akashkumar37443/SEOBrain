@@ -269,3 +269,18 @@ secrets.json
 *.secrets.json
 appsettings.Production.json
 appsettings.Development.json
+
+# =============================================
+# Custom / Project Specific Ignore Rules
+# =============================================
+
+# Ignore all markdown documentation and AI artifacts
+*.md
+
+# AI agent scratch & system folders
+scratch/
+.gemini/
+.system_generated/
+
+# Data files / model training data
+*.jsonl
