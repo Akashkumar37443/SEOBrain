@@ -114,17 +114,17 @@ export function SubscriptionModal({ isOpen, onClose, currentTier = 'free' }) {
         onClick={onClose}
       />
       
-      <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl">
-        <div className="sticky top-0 bg-white/95 backdrop-blur-xl border-b border-slate-200 p-6 flex items-center justify-between z-10">
+      <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto glass-dark rounded-3xl shadow-2xl border border-white/10">
+        <div className="sticky top-0 bg-slate-900/80 backdrop-blur-xl border-b border-white/10 p-6 flex items-center justify-between z-10">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">Choose Your Plan</h2>
-            <p className="text-slate-500 mt-1">Unlock more powerful SEO analysis capabilities</p>
+            <h2 className="text-2xl font-bold text-white">Choose Your Plan</h2>
+            <p className="text-slate-300 mt-1">Unlock more powerful SEO analysis capabilities</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
+            className="p-2 hover:bg-white/10 rounded-xl transition-colors"
           >
-            <X className="w-6 h-6 text-slate-500" />
+            <X className="w-6 h-6 text-slate-300" />
           </button>
         </div>
 
@@ -147,15 +147,15 @@ export function SubscriptionModal({ isOpen, onClose, currentTier = 'free' }) {
               {tiers.map((tier) => (
                 <div
                   key={tier.id}
-                  className={`relative rounded-2xl border-2 transition-all duration-300 ${
+                  className={`relative rounded-2xl border-2 transition-all duration-300 glass-card ${
                     isCurrentPlan(tier.id)
-                      ? 'border-pink-500 shadow-xl shadow-pink-200'
-                      : 'border-slate-200 hover:border-pink-300 hover:shadow-lg'
+                      ? 'border-pink-500 shadow-xl shadow-pink-500/20'
+                      : 'border-white/10 hover:border-pink-500/50 hover:shadow-lg'
                   }`}
                 >
                   {isCurrentPlan(tier.id) && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <span className="px-4 py-1 bg-gradient-to-r from-pink-500 to-violet-500 text-white text-sm font-semibold rounded-full">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                      <span className="px-4 py-1 bg-gradient-to-r from-pink-500 to-violet-500 text-white text-sm font-semibold rounded-full shadow-lg shadow-pink-500/30">
                         Current
                       </span>
                     </div>
@@ -166,19 +166,19 @@ export function SubscriptionModal({ isOpen, onClose, currentTier = 'free' }) {
                       {getTierIcon(tier.id)}
                     </div>
 
-                    <h3 className="text-xl font-bold text-slate-800 mb-1">{tier.name}</h3>
-                    <p className="text-slate-500 text-sm mb-4">{tier.description}</p>
+                    <h3 className="text-xl font-bold text-white mb-1">{tier.name}</h3>
+                    <p className="text-slate-300 text-sm mb-4">{tier.description}</p>
 
                     <div className="mb-6">
-                      <span className="text-4xl font-bold text-slate-800">
+                      <span className="text-4xl font-bold text-white">
                         ${tier.price}
                       </span>
                       <span className="text-slate-400">/month</span>
                     </div>
 
-                    <div className="mb-6 p-3 bg-slate-50 rounded-lg">
-                      <p className="text-sm text-slate-600">
-                        <span className="font-semibold text-pink-600">{tier.analysisQuota}</span> analyses per month
+                    <div className="mb-6 p-3 bg-white/5 rounded-lg border border-white/5">
+                      <p className="text-sm text-slate-300">
+                        <span className="font-semibold text-pink-400">{tier.analysisQuota}</span> analyses per month
                       </p>
                     </div>
 
@@ -188,7 +188,7 @@ export function SubscriptionModal({ isOpen, onClose, currentTier = 'free' }) {
                           <div className={`w-5 h-5 rounded-full bg-gradient-to-br ${getTierColor(tier.id)} flex items-center justify-center flex-shrink-0 mt-0.5`}>
                             <Check className="w-3 h-3 text-white" />
                           </div>
-                          <span className="text-slate-600 text-sm">{feature}</span>
+                          <span className="text-slate-300 text-sm">{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -198,10 +198,10 @@ export function SubscriptionModal({ isOpen, onClose, currentTier = 'free' }) {
                       disabled={isCurrentPlan(tier.id) || checkoutLoading === tier.id}
                       className={`w-full py-3 rounded-xl font-semibold transition-all duration-200 ${
                         isCurrentPlan(tier.id)
-                          ? 'bg-slate-100 text-slate-400 cursor-default'
+                          ? 'bg-white/5 text-slate-400 cursor-default border border-white/5'
                           : tier.id === 'free'
-                          ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                          : 'bg-gradient-to-r from-pink-500 to-violet-500 text-white hover:from-pink-600 hover:to-violet-600 shadow-lg shadow-pink-200'
+                          ? 'bg-white/10 text-white hover:bg-white/20 border border-white/10'
+                          : 'bg-gradient-to-r from-pink-500 to-violet-500 text-white hover:from-pink-600 hover:to-violet-600 shadow-lg shadow-pink-500/20'
                       } ${checkoutLoading === tier.id ? 'opacity-70 cursor-wait' : ''}`}
                     >
                       {checkoutLoading === tier.id ? (

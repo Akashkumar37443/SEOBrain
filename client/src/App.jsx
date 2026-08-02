@@ -38,10 +38,10 @@ function NavItem({ icon: Icon, label, badge, active = false, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${
         active 
-          ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-200' 
-          : 'text-slate-200 hover:bg-white/10 hover:text-white'
+          ? 'bg-gradient-to-r from-violet-600/80 to-purple-600/80 text-white shadow-lg shadow-violet-500/25 backdrop-blur-sm border border-white/10' 
+          : 'text-slate-300 hover:bg-white/8 hover:text-white hover:backdrop-blur-sm'
       }`}
     >
       <Icon className={`w-5 h-5 ${active ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`} />
@@ -139,7 +139,7 @@ function App() {
       
       <div className="flex h-screen relative z-10">
         {/* Sidebar */}
-        <aside className="w-72 bg-slate-900/60 backdrop-blur-2xl border-r border-white/10 flex flex-col shadow-2xl">
+        <aside className="w-72 glass-sidebar flex flex-col shadow-2xl">
           <div className="p-6 border-b border-white/10">
             <div className="flex items-center gap-3">
               <div className="w-14 h-14 bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg shadow-fuchsia-500/50 floating flex-shrink-0">
@@ -228,7 +228,7 @@ function App() {
           
           <div className="p-4 border-t border-white/10">
             {/* User Info */}
-            <div className="bg-black/30 rounded-2xl p-4 text-white mb-4 border border-white/10 shadow-inner">
+            <div className="glass-card rounded-2xl p-4 text-white mb-4">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-violet-600 rounded-full flex items-center justify-center font-bold text-white shadow">
                   {user?.firstName?.[0] || <User className="w-5 h-5 text-white" />}
@@ -255,7 +255,7 @@ function App() {
         </aside>
         
         {/* Main Content */}
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto bg-slate-950/30 backdrop-blur-sm">
           <div className="max-w-6xl mx-auto p-8 lg:p-12">
             {activeTab === 'editor' && (
               <ContentEditor 

@@ -83,7 +83,7 @@ Keywords: ${c.keywords.join(', ')}
         </p>
       </div>
 
-      <div className="glass rounded-3xl p-8 mb-8 border border-white/40 shadow-2xl shadow-purple-500/20 neon-glow">
+      <div className="glass-dark rounded-3xl p-8 mb-8 shadow-2xl shadow-purple-500/20 neon-glow">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="md:col-span-2">
             <label className="text-white font-semibold text-lg block mb-2 flex items-center gap-2">
@@ -144,7 +144,7 @@ Keywords: ${c.keywords.join(', ')}
 
       {result && result.clusters && (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="glass rounded-3xl p-6 bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-blue-500/20 flex items-center justify-between border border-white/30">
+          <div className="glass-card rounded-3xl p-6 bg-gradient-to-r from-purple-500/20 via-indigo-500/20 to-blue-500/20 flex items-center justify-between">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-white/20 rounded-2xl">
                 <Layers className="w-8 h-8 text-white" />
@@ -174,7 +174,7 @@ Keywords: ${c.keywords.join(', ')}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {result.clusters.map((cluster, idx) => (
-              <div key={idx} className="glass rounded-3xl p-8 border border-white/30 hover:border-purple-400/50 transition-all duration-300 shadow-xl flex flex-col justify-between bg-black/20">
+              <div key={idx} className="glass-premium rounded-3xl p-8 hover:border-purple-400/50 transition-all duration-300 shadow-xl flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <span className={`px-3.5 py-1 rounded-full text-xs font-bold border ${getIntentBadge(cluster.intent)} uppercase tracking-wider`}>

@@ -86,7 +86,7 @@ ${result.schemaOpportunities?.map(s => `• ${s}`).join('\n')}`
         </p>
       </div>
 
-      <div className="glass rounded-3xl p-8 mb-8 border border-white/40 shadow-2xl shadow-purple-500/20 neon-glow">
+      <div className="glass-dark rounded-3xl p-8 mb-8 shadow-2xl shadow-purple-500/20 neon-glow">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label className="text-white font-semibold text-lg block mb-2">Primary Target Keyword</label>
@@ -182,7 +182,7 @@ ${result.schemaOpportunities?.map(s => `• ${s}`).join('\n')}`
       </div>
 
       {result && (
-        <div className="glass rounded-3xl overflow-hidden shadow-2xl border border-white/40 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="glass-dark rounded-3xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-600 px-8 py-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <ShieldCheck className="w-7 h-7 text-white" />

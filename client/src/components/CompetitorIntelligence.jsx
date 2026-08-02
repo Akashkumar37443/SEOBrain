@@ -70,7 +70,7 @@ ${result.contentGaps?.map(g => `• ${g}`).join('\n') || 'None detected'}`
         </p>
       </div>
 
-      <div className="glass rounded-3xl p-8 mb-8 border border-white/40 shadow-2xl shadow-purple-500/20 neon-glow">
+      <div className="glass-dark rounded-3xl p-8 mb-8 shadow-2xl shadow-purple-500/20 neon-glow">
         <div className="mb-6">
           <label className="text-white font-semibold text-lg block mb-2 flex items-center gap-2">
             <span>🎯</span> Target Keyword
@@ -139,7 +139,7 @@ ${result.contentGaps?.map(g => `• ${g}`).join('\n') || 'None detected'}`
       </div>
 
       {result && (
-        <div className="glass rounded-3xl overflow-hidden shadow-2xl border border-white/40 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="glass-dark rounded-3xl overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 px-8 py-6 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Swords className="w-7 h-7 text-white" />

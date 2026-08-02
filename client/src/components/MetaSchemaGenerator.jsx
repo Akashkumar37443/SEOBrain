@@ -61,7 +61,7 @@ export function MetaSchemaGenerator() {
         </p>
       </div>
 
-      <div className="glass rounded-3xl p-8 mb-8 border border-white/40 shadow-2xl shadow-purple-500/20 neon-glow">
+      <div className="glass-dark rounded-3xl p-8 mb-8 shadow-2xl shadow-purple-500/20 neon-glow">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
             <label className="text-white font-semibold text-lg block mb-2 flex items-center gap-2">
@@ -136,7 +136,7 @@ export function MetaSchemaGenerator() {
       {result && (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="glass rounded-3xl p-8 border border-white/30 shadow-2xl flex flex-col justify-between bg-black/20">
+            <div className="glass-premium rounded-3xl p-8 shadow-2xl flex flex-col justify-between">
               <div>
                 <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3 border-b border-white/10 pb-4">
                   <Globe className="w-6 h-6 text-pink-400" />
@@ -192,7 +192,7 @@ export function MetaSchemaGenerator() {
                 </div>
               </div>
 
-              <div className="glass rounded-3xl p-8 border border-white/30 shadow-2xl flex flex-col justify-between bg-black/20">
+              <div className="glass-premium rounded-3xl p-8 shadow-2xl flex flex-col justify-between">
                 <div>
                   <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
                     <h3 className="text-2xl font-bold text-white flex items-center gap-3">

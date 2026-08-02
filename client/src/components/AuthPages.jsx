@@ -34,7 +34,7 @@ export default function AuthPages() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="glass rounded-3xl p-8 w-full max-w-md">
+      <div className="glass-dark rounded-3xl p-8 w-full max-w-md neon-glow">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-br from-pink-500 via-fuchsia-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-fuchsia-500/50">

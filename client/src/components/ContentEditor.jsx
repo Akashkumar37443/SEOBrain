@@ -21,7 +21,7 @@ export function ContentEditor({ text, setText, charCount, loading, error, result
         </p>
       </div>
       
-      <div className="glass rounded-3xl border border-white/40 shadow-2xl shadow-purple-500/20 overflow-hidden mb-6 neon-glow">
+      <div className="glass-dark rounded-3xl shadow-2xl shadow-purple-500/20 overflow-hidden mb-6 neon-glow">
         <div className="px-6 py-4 border-b border-white/20 flex items-center justify-between bg-gradient-to-r from-pink-500/10 to-violet-500/10">
           <div className="flex items-center gap-4">
             <span className="text-sm font-bold text-white">
@@ -48,7 +48,7 @@ export function ContentEditor({ text, setText, charCount, loading, error, result
             onKeyDown={handleKeyDown}
             placeholder="Paste your article, blog post, or web content here for AI-powered SEO analysis..."
             rows={12}
-            className="w-full resize-none bg-transparent text-slate-800 placeholder:text-slate-400 text-lg leading-relaxed outline-none"
+            className="w-full resize-none bg-transparent text-slate-100 placeholder:text-slate-500 text-lg leading-relaxed outline-none"
             style={{ minHeight: '300px' }}
           />
         </div>
@@ -123,7 +123,7 @@ export function ResultCard({ result }) {
   }
 
   return (
-    <div className="glass rounded-3xl border border-white/40 shadow-2xl shadow-purple-500/20 overflow-hidden mb-6 neon-glow animate-fade-in">
+    <div className="glass-dark rounded-3xl shadow-2xl shadow-purple-500/20 overflow-hidden mb-6 neon-glow animate-fade-in">
       <div className="p-8">
         {/* Score Header */}
         <div className="flex items-center gap-6 mb-8">
@@ -138,7 +138,7 @@ export function ResultCard({ result }) {
 
         {/* Summary */}
         {summary && (
-          <div className="mb-6 p-4 bg-white/10 rounded-xl">
+          <div className="mb-6 p-4 glass-card rounded-xl">
             <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
               <FileText className="w-5 h-5 text-pink-400" />
               Summary
@@ -240,7 +240,7 @@ export function AnalysisHistory() {
           <p className="text-white/80">Loading history...</p>
         </div>
       ) : analyses.length === 0 ? (
-        <div className="text-center py-16 glass rounded-3xl">
+        <div className="text-center py-16 glass-card rounded-3xl">
           <Clock className="w-16 h-16 text-white/40 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-white mb-2">No analyses yet</h3>
           <p className="text-white/60">Start analyzing content to build your history!</p>
@@ -248,7 +248,7 @@ export function AnalysisHistory() {
       ) : (
         <div className="space-y-4">
           {analyses.map((analysis) => (
-            <div key={analysis.id} className="glass rounded-2xl p-6 hover:bg-white/10 transition-colors cursor-pointer">
+            <div key={analysis.id} className="glass-card rounded-2xl p-6 hover:bg-white/8 transition-all duration-300 cursor-pointer hover:scale-[1.01]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <span className={`text-3xl font-bold ${getScoreColor(analysis.score)}`}>
@@ -347,12 +347,12 @@ export function AnalyticsDashboard() {
         </div>
       )}
 
-      <div className="glass rounded-3xl p-8">
+      <div className="glass-dark rounded-3xl p-8">
         <h3 className="text-2xl font-bold text-white mb-6">Recent Activity</h3>
         {stats?.recentActivity?.length > 0 ? (
           <div className="space-y-4">
             {stats.recentActivity.map((activity, index) => (
-              <div key={index} className="flex items-center gap-4 p-4 bg-white/5 rounded-xl">
+              <div key={index} className="flex items-center gap-4 p-4 glass-card rounded-xl">
                 <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-violet-500 rounded-full flex items-center justify-center">
                   <FileText className="w-6 h-6 text-white" />
                 </div>
@@ -375,7 +375,7 @@ export function AnalyticsDashboard() {
 
 function StatCard({ title, value, icon: Icon, color }) {
   return (
-    <div className="glass rounded-2xl p-6 hover:bg-white/10 transition-all duration-300 transform hover:scale-105">
+    <div className="glass-premium rounded-2xl p-6 hover:bg-white/8 transition-all duration-300 transform hover:scale-105">
       <div className={`w-12 h-12 bg-gradient-to-br ${color} rounded-xl flex items-center justify-center mb-4`}>
         <Icon className="w-6 h-6 text-white" />
       </div>
@@ -436,7 +436,7 @@ export function SettingsPage() {
 
       <div className="space-y-6">
         {/* Profile Section */}
-        <div className="glass rounded-3xl p-8">
+        <div className="glass-dark rounded-3xl p-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
               <span className="w-8 h-8 bg-gradient-to-br from-pink-500 to-violet-500 rounded-lg flex items-center justify-center text-sm">👤</span>
@@ -522,7 +522,7 @@ export function SettingsPage() {
         </div>
 
         {/* Subscription Section */}
-        <div className="glass rounded-3xl p-8">
+        <div className="glass-dark rounded-3xl p-8">
           <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
             <span className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center text-sm">⭐</span>
             Subscription
@@ -544,7 +544,7 @@ export function SettingsPage() {
         </div>
 
         {/* API Keys Section */}
-        <div className="glass rounded-3xl p-8">
+        <div className="glass-dark rounded-3xl p-8">
           <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
             <span className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center text-sm">🔑</span>
             API Keys

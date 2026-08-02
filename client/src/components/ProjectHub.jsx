@@ -139,7 +139,7 @@ export function ProjectHub({ onSelectProject }) {
       </div>
 
       {isCreating && (
-        <div className="glass rounded-3xl p-8 mb-8 border border-white/40 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300 neon-glow">
+        <div className="glass-dark rounded-3xl p-8 mb-8 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300 neon-glow">
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
             <h3 className="text-2xl font-bold text-white flex items-center gap-2">
               <FolderKanban className="w-6 h-6 text-blue-400" />
@@ -211,7 +211,7 @@ export function ProjectHub({ onSelectProject }) {
           <p className="text-lg font-medium text-white/80">Loading SEO Projects...</p>
         </div>
       ) : projects.length === 0 ? (
-        <div className="glass rounded-3xl p-16 text-center border border-white/20 shadow-xl">
+        <div className="glass-card rounded-3xl p-16 text-center shadow-xl">
           <FolderKanban className="w-16 h-16 text-white/40 mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-white mb-2">No Projects Created Yet</h3>
           <p className="text-white/70 max-w-md mx-auto mb-6 text-base">
@@ -236,7 +236,7 @@ export function ProjectHub({ onSelectProject }) {
                 <div
                   key={proj.id}
                   onClick={() => selectProjectDetail(proj)}
-                  className={`glass p-5 rounded-2xl border transition-all cursor-pointer relative group ${selectedProject?.id === proj.id ? 'border-blue-400 bg-white/20 shadow-lg shadow-blue-500/20' : 'border-white/20 hover:border-white/40 hover:bg-white/10'}`}
+                  className={`glass-card p-5 rounded-2xl transition-all cursor-pointer relative group ${selectedProject?.id === proj.id ? 'border-blue-400 bg-white/15 shadow-lg shadow-blue-500/20' : 'hover:border-white/30 hover:bg-white/8'}`}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <h4 className="text-lg font-bold text-white pr-8 leading-snug group-hover:text-blue-300 transition-colors">
@@ -267,7 +267,7 @@ export function ProjectHub({ onSelectProject }) {
 
           <div className="lg:col-span-2">
             {selectedProject ? (
-              <div className="glass rounded-3xl p-8 border border-white/40 shadow-2xl relative animate-in fade-in zoom-in-95 duration-300">
+              <div className="glass-dark rounded-3xl p-8 shadow-2xl relative animate-in fade-in zoom-in-95 duration-300">
                 <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-6 border-b border-white/10">
                   <div>
                     <span className="text-xs font-bold text-blue-300 uppercase tracking-wider block mb-1">Active Project Overview</span>
@@ -371,7 +371,7 @@ export function ProjectHub({ onSelectProject }) {
                 </div>
               </div>
             ) : (
-              <div className="glass rounded-3xl p-16 text-center border border-white/20 shadow-xl flex flex-col items-center justify-center min-h-[500px]">
+              <div className="glass-card rounded-3xl p-16 text-center shadow-xl flex flex-col items-center justify-center min-h-[500px]">
                 <FolderKanban className="w-16 h-16 text-white/30 mb-4 animate-pulse" />
                 <h3 className="text-2xl font-bold text-white mb-2">Select a Campaign Project</h3>
                 <p className="text-white/70 max-w-md mx-auto text-base">
